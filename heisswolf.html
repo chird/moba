@@ -77,8 +77,8 @@ for (let i=0; i<=99; i++) {
     let result = {};
     response.split(/\n/).forEach(str => {
       let keyvalue = str.split(/=/, 2);
-      if (!keyvalue[0].test(/^(nr|name|Uo|Ui|Fo|Fi)$/))
-        throw Error('Couldn\'t parse '+str);
+      if (!/^(nr|name|Uo|Ui|Fo|Fi)$/.test(keyvalue[0]))
+        throw Error(`Couldn\'t parse ${str}`);
       result[keyvalue[0]] = keyvalue[1];
     });
     let tr = $('<tr>');
