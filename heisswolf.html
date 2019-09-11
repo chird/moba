@@ -1,0 +1,97 @@
+<html>
+<head>
+  <title>Heisswolf-Einstellungen</title>
+  <meta charset="UTF-8">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+</head>
+<body>
+</body>
+<script>
+$(document).ready(() => {
+//HTML aufbauen
+let titleRow = $('<div>').addClass('row')
+  .append($('<h1>').append('Heisswolf-Einstellungen'));
+let tableRow = $('<div>').addClass('row');
+let table = $('<table>');
+let thead = $('<thead>');
+thead.append(
+  $('<tr>')
+  .append($('<th>').append('Nr'))
+  .append($('<th>').append('Bezeichnung'))
+  .append($('<th>').append('Uo'))
+  .append($('<th>').append('Ui'))
+  .append($('<th>').append('Fi'))
+  .append($('<th>').append('Fo')));
+let tbody = $('<tbody>');
+let errorRow = $('<div>').addClass('row');
+$('body').addClass('container')
+.append(titleRow)
+.append(tableRow
+        .append($('<div>').addClass('col')
+                .append(table.append(thead).append(tbody))));
+
+let errorMsg = msg => {
+  errorRow.append($('<p>').append(msg));
+};
+/*let sortTable = () => {
+  let keys = [];
+  let values = [];
+  tbody.children().each((i, tr) => {
+    let value = tr.children().first().text();
+    if (value !== undefined)
+      value = +value;
+    keys.push(value);
+    keys.push(tr);
+  });
+  parallelSort(keys, values);
+  values.forEach(tr => {
+    tbody.append(tr);
+  });
+};*/
+
+let promises = [];
+for (let i=0; i<=99; i++) {
+  let file = i.toString();
+  if (file.length < 2)
+    file = '0' + file;
+  let filename = `heisswolf/${file}`;
+  promises.push(new Promise((resolve, reject) => {
+    let req = new XMLHttppRequest();
+    req.open('GET', filename);
+    req.onload = () => {
+      if (req.status == 200)
+        resolve(req.response);
+      else
+        reject(Error(req));
+    };
+    req.onerror = () => reject(Error(req));
+    req.send();
+  }));
+}
+Promise.all(promises).then(response => {
+  let result = {};
+  response.split(/\n/).forEach(str => {
+    let keyvalue = str.split(/=/, 2);
+    if (!keyvalue[0].test(/^(nr|name|Uo|Ui|Fo|Fi)$/))
+      throw Error('Couldn\'t parse '+str);
+    result[keyvalue[0]] = keyvalue[1];
+  });
+  let tr = $('<tr>');
+  ['nr', 'name', 'Uo', 'Ui', 'Fo', 'Fi'].forEach(id => {
+    tr.append($('<td>').append((id in result) ? result[id] : ''));
+  });
+  thead.append(tr);
+}, req => {
+  console.log(req);
+  if (req.status == 404)
+    errorMsg('existiert nicht');
+  else
+    errorMsg(req.statusText);
+})
+.catch(e => {
+  errorMsg(e);
+});
+</script>
+</html>
