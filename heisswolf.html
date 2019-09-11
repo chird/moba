@@ -66,23 +66,26 @@ for (let i=0; i<=99; i++) {
       if (req.status == 200)
         resolve(req.response);
       else if (req.status == 404)
-        resolve(`nr=${file}`);
+        resolve(undefined);
       else
         reject(Error(`Konnte ${filename} nicht laden`));
     };
     req.onerror = () => reject(Error('Netzwerk-Problem'));
     req.send();
   }).then(response => {
-    console.log(response);
-    let result = {};
-    response.split(/\n/).forEach(str => {
-      let keyvalue = str.split(/=/, 2);
-      if (!/^(nr|name|Uo|Ui|Fo|Fi)$/.test(keyvalue[0]))
-        throw Error(`Couldn\'t parse ${str}`);
-      result[keyvalue[0]] = keyvalue[1];
-    });
+    let result = {
+      nr: i
+    };
+    if (response !== undefined)
+      response.split(/\n/).forEach(str => {
+        let keyvalue = str.split(/=/, 2);
+        if (!/^(name|Uo|Ui|Fo|Fi)$/.test(keyvalue[0]))
+          throw Error(`Couldn\'t parse ${str}`);
+        result[keyvalue[0]] = keyvalue[1];
+      });
+    result.nr = i;
     let tr = $('<tr>');
-    if (Object.keys(result).length == 1)
+    if (response === undefined)
       tr.addClass('table-warning');
     ['nr', 'name', 'Uo', 'Ui', 'Fo', 'Fi'].forEach(id => {
       tr.append($('<td>').append((id in result) ? result[id] : ''));
