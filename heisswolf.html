@@ -55,10 +55,10 @@ let errorMsg = msg => {
 
 let promises = [];
 for (let i=0; i<=99; i++) {
-  let file = i.toString();
-  if (file.length < 2)
-    file = '0' + file;
-  let filename = `heisswolf/${file}`;
+  let nr = i.toString();
+  if (nr.length < 2)
+    nr = '0' + file;
+  let filename = `heisswolf/${nr}`;
   promises.push(new Promise((resolve, reject) => {
     let req = new XMLHttpRequest();
     req.open('GET', filename);
@@ -74,7 +74,7 @@ for (let i=0; i<=99; i++) {
     req.send();
   }).then(response => {
     let result = {
-      nr: i
+      nr
     };
     if (response !== undefined)
       response.split(/\n/).forEach(str => {
@@ -83,7 +83,6 @@ for (let i=0; i<=99; i++) {
           throw Error(`Couldn\'t parse ${str}`);
         result[keyvalue[0]] = keyvalue[1];
       });
-    result.nr = i;
     let tr = $('<tr>');
     if (response === undefined)
       tr.addClass('table-warning');
