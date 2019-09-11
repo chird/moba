@@ -64,36 +64,34 @@ for (let i=0; i<=99; i++) {
     req.onload = () => {
       if (req.status == 200)
         resolve(req.response);
+      else if (req.status == 404)
+        reject(Error(`${filename} existiert nicht`));
       else
-        reject(Error(req.status));
+        reject(Error(`Konnte ${filename} nicht laden`));
     };
-    req.onerror = () => reject(Error(req.status));
+    req.onerror = () => reject(Error('Netzwerk-Problem'));
     req.send();
+  }).then(response => {
+    let result = {};
+    response.split(/\n/).forEach(str => {
+      let keyvalue = str.split(/=/, 2);
+      if (!keyvalue[0].test(/^(nr|name|Uo|Ui|Fo|Fi)$/))
+        throw Error('Couldn\'t parse '+str);
+      result[keyvalue[0]] = keyvalue[1];
+    });
+    let tr = $('<tr>');
+    ['nr', 'name', 'Uo', 'Ui', 'Fo', 'Fi'].forEach(id => {
+      tr.append($('<td>').append((id in result) ? result[id] : ''));
+    });
+    tbody.append(tr);
+  }, e => {
+    errorMsg(e.message);
+  })
+  .catch(e => {
+    errorMsg(e.message);
   }));
 }
-Promise.all(promises).then(response => {
-  let result = {};
-  response.split(/\n/).forEach(str => {
-    let keyvalue = str.split(/=/, 2);
-    if (!keyvalue[0].test(/^(nr|name|Uo|Ui|Fo|Fi)$/))
-      throw Error('Couldn\'t parse '+str);
-    result[keyvalue[0]] = keyvalue[1];
-  });
-  let tr = $('<tr>');
-  ['nr', 'name', 'Uo', 'Ui', 'Fo', 'Fi'].forEach(id => {
-    tr.append($('<td>').append((id in result) ? result[id] : ''));
-  });
-  thead.append(tr);
-}, req => {
-  console.log(req);
-  if (req.status == 404)
-    errorMsg('existiert nicht');
-  else
-    errorMsg(req.statusText);
-})
-.catch(e => {
-  errorMsg(e);
-});
+Promise.all(promises);
 });
 </script>
 </html>
