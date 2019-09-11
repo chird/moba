@@ -12,29 +12,30 @@
 $(document).ready(() => {
 //HTML aufbauen
 let titleRow = $('<div>').addClass('row')
-  .append($('<h1>').append('Heisswolf-Einstellungen'));
+  .append($('<h1>').addClass('mx-auto mb-4').append('Heisswolf-Einstellungen'));
 let tableRow = $('<div>').addClass('row');
-let table = $('<table>');
+let table = $('<table>').addClass('table table-striped');
 let thead = $('<thead>');
 thead.append(
   $('<tr>')
-  .append($('<th>').append('Nr'))
-  .append($('<th>').append('Bezeichnung'))
-  .append($('<th>').append('Uo'))
-  .append($('<th>').append('Ui'))
-  .append($('<th>').append('Fi'))
-  .append($('<th>').append('Fo')));
+  .append($('<th>').attr('scope', 'col').append('Nr'))
+  .append($('<th>').attr('scope', 'col').append('Bezeichnung'))
+  .append($('<th>').attr('scope', 'col').append('Uo'))
+  .append($('<th>').attr('scope', 'col').append('Ui'))
+  .append($('<th>').attr('scope', 'col').append('Fi'))
+  .append($('<th>').attr('scope', 'col').append('Fo')));
 let tbody = $('<tbody>');
 let errorRow = $('<div>').addClass('row');
+let errorNode = $('<div>').addClass('col alert alert-danger');
 $('body').addClass('container')
 .append(titleRow)
 .append(tableRow
         .append($('<div>').addClass('col')
                 .append(table.append(thead).append(tbody))))
-.append(errorRow);
+.append(errorRow.append(errorNode));
 
 let errorMsg = msg => {
-  errorRow.append($('<p>').append(msg));
+  errorNode.append($('<p>').addClass('mb-0').append(msg));
 };
 /*let sortTable = () => {
   let keys = [];
@@ -72,6 +73,7 @@ for (let i=0; i<=99; i++) {
     req.onerror = () => reject(Error('Netzwerk-Problem'));
     req.send();
   }).then(response => {
+    console.log(response);
     let result = {};
     response.split(/\n/).forEach(str => {
       let keyvalue = str.split(/=/, 2);
