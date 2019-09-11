@@ -30,7 +30,8 @@ $('body').addClass('container')
 .append(titleRow)
 .append(tableRow
         .append($('<div>').addClass('col')
-                .append(table.append(thead).append(tbody))));
+                .append(table.append(thead).append(tbody))))
+.append(errorRow);
 
 let errorMsg = msg => {
   errorRow.append($('<p>').append(msg));
@@ -58,15 +59,15 @@ for (let i=0; i<=99; i++) {
     file = '0' + file;
   let filename = `heisswolf/${file}`;
   promises.push(new Promise((resolve, reject) => {
-    let req = new XMLHttppRequest();
+    let req = new XMLHttpRequest();
     req.open('GET', filename);
     req.onload = () => {
       if (req.status == 200)
         resolve(req.response);
       else
-        reject(Error(req));
+        reject(Error(req.status));
     };
-    req.onerror = () => reject(Error(req));
+    req.onerror = () => reject(Error(req.status));
     req.send();
   }));
 }
@@ -92,6 +93,7 @@ Promise.all(promises).then(response => {
 })
 .catch(e => {
   errorMsg(e);
+});
 });
 </script>
 </html>
