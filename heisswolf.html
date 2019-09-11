@@ -79,7 +79,7 @@ for (let i=0; i<=99; i++) {
     if (response !== undefined)
       response.split(/\n/).forEach(str => {
         let keyvalue = str.split(/=/, 2);
-        if (!/^(name|Uo|Ui|Fo|Fi)$/.test(keyvalue[0]))
+        if (!/^(name|Uo|Ui|Fo|Fu)$/.test(keyvalue[0]))
           throw Error(`Couldn\'t parse ${str}`);
         result[keyvalue[0]] = keyvalue[1];
       });
@@ -87,7 +87,7 @@ for (let i=0; i<=99; i++) {
     let tr = $('<tr>');
     if (response === undefined)
       tr.addClass('table-warning');
-    ['nr', 'name', 'Uo', 'Ui', 'Fo', 'Fi'].forEach(id => {
+    ['nr', 'name', 'Uo', 'Ui', 'Fu', 'Fo'].forEach(id => {
       tr.append($('<td>').append((id in result) ? result[id] : ''));
     });
     tbody.append(tr);
