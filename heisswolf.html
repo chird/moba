@@ -14,7 +14,7 @@ $(document).ready(() => {
 let titleRow = $('<div>').addClass('row')
   .append($('<h1>').addClass('mx-auto mb-4').append('Heisswolf-Einstellungen'));
 let tableRow = $('<div>').addClass('row');
-let table = $('<table>').addClass('table table-striped');
+let table = $('<table>').addClass('table table-sm table-striped');
 let thead = $('<thead>');
 thead.append(
   $('<tr>')
@@ -25,7 +25,7 @@ thead.append(
   .append($('<th>').attr('scope', 'col').append('Fi'))
   .append($('<th>').attr('scope', 'col').append('Fo')));
 let tbody = $('<tbody>');
-let errorRow = $('<div>').addClass('row');
+let errorRow = $('<div>').addClass('row d-print-none');
 let errorNode = $('<div>').addClass('col alert alert-danger');
 $('body').addClass('container')
 .append(titleRow)
@@ -57,7 +57,7 @@ let promises = [];
 for (let i=0; i<=99; i++) {
   let nr = i.toString();
   if (nr.length < 2)
-    nr = '0' + file;
+    nr = '0' + nr;
   let filename = `heisswolf/${nr}`;
   promises.push(new Promise((resolve, reject) => {
     let req = new XMLHttpRequest();
