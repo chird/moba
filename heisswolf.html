@@ -114,7 +114,7 @@ Promise.all(promises).then(() => {
     if (a.row.hasClass('table-warning') &&
         !b.row.hasClass('table-warning'))
       return -1;
-    return (a.id < b.id) ? -1 : (a.id > b.id) ? 1 : 0;
+    return (a.id < b.id) ? 1 : (a.id > b.id) ? -1 : 0;
   });
   let prevSibling = undefined;
   rows.forEach(row => {
