@@ -75,7 +75,18 @@ for (let i=0; i<=99; i++) {
     if (response === undefined)
       tr.addClass('table-warning d-print-none');
     ['nr', 'name', 'Uo', 'Ui', 'Fu', 'Fo'].forEach(id => {
-      tr.append($('<td>').append((id in result) ? result[id] : ''));
+      let text = (id in result) ? result[id] : '';
+      if (id == 'name') {
+        let td = $('<td>');
+        text.split(/,/).forEach((t, i) => {
+          td.append(t);
+          if (i > 0)
+            td.append($('<br>'));
+        });
+        tr.append(td);
+      }
+      else
+        tr.append($('<td>').append(text));
     });
     tbody.append(tr);
   }, e => {
