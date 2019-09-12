@@ -88,12 +88,12 @@ for (let i=0; i<=99; i++) {
 Promise.all(promises).then(() => {
   let rows = [];
   tbody.children().each((i, tr) => {
-    let value = tr.children().first().text();
+    let value = $(tr).children().first().text();
     if (value !== undefined)
       value = +value;
     rows.push({
       id: value,
-      row: tr
+      row: $(tr)
     });
   });
   rows.sort((a, b) => {
@@ -108,9 +108,9 @@ Promise.all(promises).then(() => {
   let prevSibling = undefined;
   rows.forEach(row => {
     if (prevSibling === undefined)
-      tbody.prepend(tr);
+      tbody.prepend(row.row);
     else
-      tr.insertAfter(prevSibling);
+      row.row.insertAfter(prevSibling);
   });
 });
 });
