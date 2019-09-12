@@ -79,9 +79,9 @@ for (let i=1; i<=99; i++) {
       if (id == 'name') {
         let td = $('<td>');
         text.split(/,/).forEach((t, i) => {
-          td.append(t);
           if (i > 0)
             td.append($('<br>'));
+          td.append(t);
         });
         tr.append(td);
       }
