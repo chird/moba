@@ -38,21 +38,6 @@ let errorMsg = msg => {
   errorRow.removeClass('d-none');
   errorNode.append($('<p>').addClass('mb-0').append(msg));
 };
-/*let sortTable = () => {
-  let keys = [];
-  let values = [];
-  tbody.children().each((i, tr) => {
-    let value = tr.children().first().text();
-    if (value !== undefined)
-      value = +value;
-    keys.push(value);
-    keys.push(tr);
-  });
-  parallelSort(keys, values);
-  values.forEach(tr => {
-    tbody.append(tr);
-  });
-};*/
 
 let promises = [];
 for (let i=0; i<=99; i++) {
@@ -88,7 +73,7 @@ for (let i=0; i<=99; i++) {
       });
     let tr = $('<tr>');
     if (response === undefined)
-      tr.addClass('table-warning');
+      tr.addClass('table-warning d-print-none');
     ['nr', 'name', 'Uo', 'Ui', 'Fu', 'Fo'].forEach(id => {
       tr.append($('<td>').append((id in result) ? result[id] : ''));
     });
@@ -100,7 +85,34 @@ for (let i=0; i<=99; i++) {
     errorMsg(e.message);
   }));
 }
-Promise.all(promises);
+Promise.all(promises).then(() => {
+  let rows = [];
+  tbody.children().each((i, tr) => {
+    let value = tr.children().first().text();
+    if (value !== undefined)
+      value = +value;
+    rows.push({
+      id: value,
+      row: tr
+    });
+  });
+  rows.sort((a, b) => {
+    if (!a.row.hasClass('table-warning') &&
+        b.row.hasClass('table-warning'))
+      return -1;
+    if (a.row.hasClass('table-warning') &&
+        !b.row.hasClass('table-warning'))
+      return 1;
+    return (a.id < b.id) ? -1 : (a.id > b.id) ? 1 : 0;
+  });
+  let prevSibling = undefined;
+  rows.forEach(row => {
+    if (prevSibling === undefined)
+      tbody.prepend(tr);
+    else
+      tr.insertAfter(prevSibling);
+  });
+});
 });
 </script>
 </html>
