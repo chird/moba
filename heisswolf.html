@@ -68,7 +68,7 @@ for (let i=1; i<=99; i++) {
           return;
         let keyvalue = str.split(/=/, 2);
         if (!/^(name|Uo|Ui|Fo|Fu)$/.test(keyvalue[0]))
-          throw Error(`Couldn\'t parse ${str}`);
+          throw Error(`${nr}: Couldn\'t parse ${str}`);
         result[keyvalue[0]] = keyvalue[1];
       });
     let tr = $('<tr>');
